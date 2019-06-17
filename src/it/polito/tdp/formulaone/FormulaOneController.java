@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.formulaone.model.Model;
+import it.polito.tdp.formulaone.model.Race;
+import it.polito.tdp.formulaone.model.Season;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,13 +24,13 @@ public class FormulaOneController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Season> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnSelezionaStagione"
     private Button btnSelezionaStagione; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGara"
-    private ComboBox<?> boxGara; // Value injected by FXMLLoader
+    private ComboBox<Race> boxGara; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnSimulaGara"
     private Button btnSimulaGara; // Value injected by FXMLLoader
@@ -44,12 +46,33 @@ public class FormulaOneController {
 
     @FXML
     void doSelezionaStagione(ActionEvent event) {
-    	txtResult.setText("btn Seleziona stagione premuto");
+    	
+    	Season anno = this.boxAnno.getValue();
+    	txtResult.clear();
+    	
+    	if(anno != null) {
+    		
+    		model.creaGrafo(anno);
+    		for(String string : model.getMigliore()) 
+    			txtResult.appendText(string+"\n");
+    		this.boxGara.getItems().addAll(model.getRaces(anno));
+    		
+    	} else txtResult.appendText("Seleziona almneo ua stagione!");
     }
 
     @FXML
     void doSimulaGara(ActionEvent event) {
-    	txtResult.setText("btn simula gara premuto");
+    	
+    	Race race = this.boxGara.getValue();
+    	double p = Integer.parseInt(textInputK.getText());
+    	double t = Integer.parseInt(textInputK.getText());
+    	txtResult.clear();
+    	
+    	if(race != null && p!= 0.0 && t!=0.0) {
+    		
+    		model.simula(race,p,t);
+    		
+    	} else txtResult.appendText("Inserisci i dati richiesti");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -65,6 +88,6 @@ public class FormulaOneController {
 
 	public void setModel(Model model) {
 		this.model = model;
-		
+		this.boxAnno.getItems().addAll(model.getSeasons());
 	}
 }

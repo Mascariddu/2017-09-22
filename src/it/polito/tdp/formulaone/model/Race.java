@@ -14,7 +14,7 @@ public class Race {
 	private LocalDate date ;
 	private LocalTime time ;
 	private String url ;
-	public Race(int raceId, Year year, int round, int circuitId, String name, LocalDate date, LocalTime time,
+	public Race(int raceId,Year year, int round, int circuitId, String name, LocalDate date, LocalTime time,
 			String url) {
 		super();
 		this.raceId = raceId;
@@ -73,6 +73,10 @@ public class Race {
 	}
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	@Override
+	public String toString() {
+		return name;
 	}
 	
 	
