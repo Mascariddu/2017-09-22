@@ -1,7 +1,9 @@
 package it.polito.tdp.formulaone.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -14,11 +16,16 @@ public class Model {
 	FormulaOneDAO dao;
 	SimpleWeightedGraph<Race, DefaultWeightedEdge> grafo;
 	List<Race> races;
+	HashMap<Integer, Driver> idMap;
+	HashMap<Driver,Integer> punteggi;
 	
 	public Model() {
 		
 		dao = new FormulaOneDAO();
-		
+		punteggi = new HashMap<Driver, Integer>();
+		idMap = new HashMap<Integer, Driver>();
+		dao.getDrivers(idMap);
+
 	}
 
 	public List<Season> getSeasons() {
@@ -84,11 +91,30 @@ public class Model {
 	public void simula(Race race,double p, double t) {
 		// TODO Auto-generated method stub
 		Simulatore simulatore = new Simulatore();
+		for(Driver driver : idMap.values())
+			punteggi.put(driver, 0);
 		
-		simulatore.init(race,p,t);
+		simulatore.init(race,p,t, this.idMap);
 		
 		simulatore.run();
 		
+		this.getClassifica(simulatore.getClassifica());
+		
+	}
+
+	private void getClassifica(HashMap<Integer, Driver> classifica) {
+		// TODO Auto-generated method stub
+		
+		for(Integer integer : classifica.keySet()) {
+			Driver driver = classifica.get(integer);
+			punteggi.replace(driver, punteggi.get(driver)+1);
+		}
+		
+	}
+
+	public HashMap<Driver, Integer> getPunteggi() {
+		// TODO Auto-generated method stub
+		return this.punteggi;
 	}
 
 }

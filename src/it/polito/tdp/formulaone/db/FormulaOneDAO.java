@@ -82,7 +82,7 @@ public class FormulaOneDAO {
 		}
 	}
 
-	public List<Driver> getDrivers(Race race) {
+	public List<Driver> getDrivers(Race race,HashMap<Integer, Driver> idMap) {
 		String sql = "SELECT DISTINCT driverId FROM laptimes l WHERE l.raceId = ?";
 		List<Driver> list = new ArrayList<Driver>();
 		try {
@@ -92,7 +92,7 @@ public class FormulaOneDAO {
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
-				list.add(new Driver(rs.getInt("driverId")));
+				list.add(idMap.get(rs.getInt("driverId")));
 			}
 			conn.close();
 			return list;
@@ -103,9 +103,9 @@ public class FormulaOneDAO {
 		}
 	}
 
-	public List<Integer> getGiro(int id, int raceId) {
+	public List<Float> getGiro(int id, int raceId) {
 		// TODO Auto-generated method stub
-		List<Integer> milli = new ArrayList<Integer>();
+		List<Float> milli = new ArrayList<Float>();
 		String sql = "SELECT l.milliseconds as milli FROM laptimes l WHERE l.raceId = ? AND l.driverId = ?";
 
 		try {
@@ -116,7 +116,7 @@ public class FormulaOneDAO {
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
-				milli.add(rs.getInt("milli"));
+				milli.add(rs.getFloat("milli"));
 			}
 			conn.close();
 			return milli;
@@ -126,6 +126,48 @@ public class FormulaOneDAO {
 			return null;
 		}
 		
+	}
+
+	public void getDrivers(HashMap<Integer, Driver> idMap) {
+		// TODO Auto-generated method stub
+		String sql = "SELECT DISTINCT driverId,d.forename as n1,d.surname as n2 FROM drivers d";
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				idMap.put(rs.getInt("driverId"), new Driver(rs.getInt("driverId"), rs.getString("n1"), rs.getString("n2")));
+			}
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int getLaps(int raceId) {
+		// TODO Auto-generated method stub
+		String sql = "SELECT MAX(lap) as laps FROM laptimes l WHERE l.raceId = ? ";
+		int laps = 0;
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, raceId);
+			ResultSet rs = st.executeQuery();
+
+			if (rs.next()) {
+				laps = rs.getInt("laps");
+			}
+			conn.close();
+			return laps;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
 
 }

@@ -27,8 +27,10 @@ public class Driver {
 		this.url = url;
 	}
 	
-	public Driver(int id) {
+	public Driver(int id,String forename,String surname) {
 		this.driverId = id;
+		this.forename = forename;
+		this.surname = surname;
 	}
 	
 	public int getDriverId() {
@@ -84,6 +86,11 @@ public class Driver {
 	}
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	@Override
+	public String toString() {
+		return driverId + ", " + forename + ", " + surname ;
 	}
 	
 	

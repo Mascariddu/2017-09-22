@@ -1,8 +1,13 @@
 package it.polito.tdp.formulaone;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.formulaone.model.Driver;
 import it.polito.tdp.formulaone.model.Model;
 import it.polito.tdp.formulaone.model.Race;
 import it.polito.tdp.formulaone.model.Season;
@@ -55,6 +60,7 @@ public class FormulaOneController {
     		model.creaGrafo(anno);
     		for(String string : model.getMigliore()) 
     			txtResult.appendText(string+"\n");
+    		this.boxGara.getItems().clear();
     		this.boxGara.getItems().addAll(model.getRaces(anno));
     		
     	} else txtResult.appendText("Seleziona almneo ua stagione!");
@@ -63,16 +69,35 @@ public class FormulaOneController {
     @FXML
     void doSimulaGara(ActionEvent event) {
     	
+    	try {
     	Race race = this.boxGara.getValue();
-    	double p = Integer.parseInt(textInputK.getText());
-    	double t = Integer.parseInt(textInputK.getText());
+    	double p = Double.parseDouble(textInputK.getText());
+    	double t = Double.parseDouble(textInputK.getText());
     	txtResult.clear();
     	
     	if(race != null && p!= 0.0 && t!=0.0) {
     		
     		model.simula(race,p,t);
+    		List<Driver> drivers = new ArrayList<Driver>(model.getPunteggi().keySet());
+    		Collections.sort(drivers, new Comparator<Driver>() {
+
+				@Override
+				public int compare(Driver o1, Driver o2) {
+					// TODO Auto-generated method stub
+					return o1.getDriverId() - o2.getDriverId();
+				}
+    			
+			});
+    		
+    		for(Driver driver : drivers)
+    			txtResult.appendText(driver.toString()+" con punteggio: "+model.getPunteggi().get(driver)+"\n");
     		
     	} else txtResult.appendText("Inserisci i dati richiesti");
+    	} catch (NumberFormatException e) {
+			// TODO: handle exception
+    		e.printStackTrace();
+    		txtResult.appendText("Inserisci i dati richiesti");
+		}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
