@@ -28,7 +28,9 @@ public class FormulaOneController {
 
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
+    
 
+    
     @FXML // fx:id="boxAnno"
     private ComboBox<Season> boxAnno; // Value injected by FXMLLoader
 
