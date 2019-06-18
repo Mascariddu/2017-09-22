@@ -22,6 +22,7 @@ public class FormulaOneController {
 
 	Model model = new Model();
 	
+	
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
